@@ -1,11 +1,12 @@
 # xsaitekpanels for Zibo
-XSaitekPanels map for Zibo 737-800 mod for:
+XSaitekPanels map for Zibo 737-800 aicraft, including:
 - Multipanel
 - Radiopanel
 - Switchpanel
 
 ## Requirements:
 - Xplane 11.50
+- Latest version of Zibo B738 aircraft [(download)](https://drive.google.com/drive/folders/0B-tdl3VvPeOOYm12Wm80V04wdDQ)
 - [XSaitekPanels - v2.75+](https://forums.x-plane.org/index.php?/files/file/14646-xsaitekpanels-linwinmac3264/)
 - [FlyWithLUA NG](https://forums.x-plane.org/index.php?/files/file/38445-flywithlua-ng-next-generation-edition-for-x-plane-11-win-lin-mac/)
 - Don't forget to install also xSaitekPanels LUA modules from the original xSaitekPanels ZIP into FlyWithLUA\Modules
