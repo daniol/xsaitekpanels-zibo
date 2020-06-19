@@ -11,7 +11,7 @@ if PLANE_ICAO == "B738" then
     
 	-- ************************************************************************************************************************************************************************************************
 	-- GLOBAL VARIABLES
-	AceXSP_Version = "1.9"
+	AceXSP_Version = "1.11"
 	
 	-- Global datarefs
 	dataref("XSP_FNBUTTON", "bgood/xsaitekpanels/fnbutton/status", "readonly")
@@ -166,7 +166,6 @@ if PLANE_ICAO == "B738" then
 	end
 	create_command("FlyWithLua/AceXSP/Switch_Avionics_On", "Switch_Avionics_On", "AceXSP_Switch_Avionics_On()", "", "")
 	function AceXSP_Switch_Avionics_Off()
-		--[[
 		if (ZIBO_IRS_LEFT ~= 0) or (ZIBO_IRS_RIGHT ~= 0) then
 			command_once("laminar/B738/toggle_switch/irs_L_left")
 			command_once("laminar/B738/toggle_switch/irs_L_left")
@@ -175,7 +174,6 @@ if PLANE_ICAO == "B738" then
 			command_once("laminar/B738/toggle_switch/irs_R_left")
 			command_once("laminar/B738/toggle_switch/irs_R_left")
 		end
-		--]]
 		return
 	end
 	create_command("FlyWithLua/AceXSP/Switch_Avionics_Off", "Switch_Avionics_Off", "AceXSP_Switch_Avionics_Off()", "", "")
