@@ -1,6 +1,7 @@
 --[[
 	Zibo Boeing 737-800
-	Version: 1.12
+	Version: 1.13
+	Source: https://github.com/daniol/xsaitekpanels-zibo
 --]]
 if PLANE_ICAO == "B738" then
     
@@ -11,7 +12,9 @@ if PLANE_ICAO == "B738" then
     
 	-- ************************************************************************************************************************************************************************************************
 	-- GLOBAL VARIABLES
-	AceXSP_Version = "1.12"
+	AceXSP_Version = "1.11"
+	-- [Ticket 1] Minimum fuel: 453 kg + 90 kg zibo internal tolerance
+	AceXSP_Zibo_FuelCenterMin = 543.0
 	
 	-- Global datarefs
 	dataref("XSP_FNBUTTON", "bgood/xsaitekpanels/fnbutton/status", "readonly")
@@ -26,8 +29,7 @@ if PLANE_ICAO == "B738" then
 	dataref("ZIBO_FUEL_RIGHT2", "laminar/B738/fuel/fuel_tank_pos_rgt2", "readonly")
 	dataref("ZIBO_FUEL_CENTER1", "laminar/B738/fuel/fuel_tank_pos_ctr1", "readonly")
 	dataref("ZIBO_FUEL_CENTER2", "laminar/B738/fuel/fuel_tank_pos_ctr2", "readonly")
-        
-        dataref("ZIBO_BAT_COVER_POSITION", "laminar/B738/button_switch/cover_position", "readonly", 2)
+	dataref("ZIBO_FUEL_CENTER_QTY", "sim/flightmodel/weight/m_fuel2", "readonly")
 		
 	-- ************************************************************************************************************************************************************************************************
 	-- PROGRAM START
@@ -107,10 +109,7 @@ if PLANE_ICAO == "B738" then
 	function AceXSP_Switch_Bat_On()
 		if XSP_FNBUTTON == 0 then
 			command_once("laminar/B738/switch/battery_dn")
-                        
-                        if ZIBO_BAT_COVER_POSITION == 1 then
-                            command_once("laminar/B738/button_switch_cover02")
-                        end
+                        command_once("laminar/B738/button_switch_cover02")
 		else
 			command_once("laminar/B738/toggle_switch/gpu_dn")
 		end
@@ -120,10 +119,8 @@ if PLANE_ICAO == "B738" then
 
 	function AceXSP_Switch_Bat_Off()
 		if XSP_FNBUTTON == 0 then
-                        if ZIBO_BAT_COVER_POSITION == 0 then
-                            command_once("laminar/B738/button_switch_cover02")
-                            sleep(0.1)
-                        end
+                        command_once("laminar/B738/button_switch_cover02")
+                        sleep(0.1)
 			command_once("laminar/B738/switch/battery_up")
 		else
 			command_once("laminar/B738/toggle_switch/gpu_up")
@@ -191,6 +188,8 @@ if PLANE_ICAO == "B738" then
 			if ZIBO_FUEL_LEFT2 ~= 1 then command_once("laminar/B738/toggle_switch/fuel_pump_lft2") end
 			if ZIBO_FUEL_RIGHT1 ~= 1 then command_once("laminar/B738/toggle_switch/fuel_pump_rgt1") end
 			if ZIBO_FUEL_RIGHT2 ~= 1 then command_once("laminar/B738/toggle_switch/fuel_pump_rgt2") end
+			if ZIBO_FUEL_CENTER1 ~= 1 and ZIBO_FUEL_CENTER_QTY >= AceXSP_Zibo_FuelCenterMin then command_once("laminar/B738/toggle_switch/fuel_pump_ctr1") end
+			if ZIBO_FUEL_CENTER2 ~= 1 and ZIBO_FUEL_CENTER_QTY >= AceXSP_Zibo_FuelCenterMin then command_once("laminar/B738/toggle_switch/fuel_pump_ctr2") end
 		else
 			if ZIBO_FUEL_LEFT1 ~= 1 then command_once("laminar/B738/toggle_switch/fuel_pump_lft1") end
 			if ZIBO_FUEL_LEFT2 ~= 1 then command_once("laminar/B738/toggle_switch/fuel_pump_lft2") end
@@ -204,19 +203,12 @@ if PLANE_ICAO == "B738" then
 	create_command("FlyWithLua/AceXSP/Switch_Fuel_On", "Switch_Fuel_On", "AceXSP_Switch_Fuel_On()", "", "")
 
 	function AceXSP_Switch_Fuel_Off()
-		if XSP_FNBUTTON == 0 then
-			if ZIBO_FUEL_LEFT1 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_lft1") end
-			if ZIBO_FUEL_LEFT2 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_lft2") end
-			if ZIBO_FUEL_RIGHT1 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_rgt1") end
-			if ZIBO_FUEL_RIGHT2 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_rgt2") end
-		else
-			if ZIBO_FUEL_LEFT1 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_lft1") end
-			if ZIBO_FUEL_LEFT2 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_lft2") end
-			if ZIBO_FUEL_RIGHT1 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_rgt1") end
-			if ZIBO_FUEL_RIGHT2 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_rgt2") end
-			if ZIBO_FUEL_CENTER1 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_ctr1") end
-			if ZIBO_FUEL_CENTER2 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_ctr2") end
-		end
+		if ZIBO_FUEL_LEFT1 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_lft1") end
+		if ZIBO_FUEL_LEFT2 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_lft2") end
+		if ZIBO_FUEL_RIGHT1 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_rgt1") end
+		if ZIBO_FUEL_RIGHT2 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_rgt2") end
+		if ZIBO_FUEL_CENTER1 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_ctr1") end
+		if ZIBO_FUEL_CENTER2 ~= 0 then command_once("laminar/B738/toggle_switch/fuel_pump_ctr2") end
 		return
 	end
 	create_command("FlyWithLua/AceXSP/Switch_Fuel_Off", "Switch_Fuel_Off", "AceXSP_Switch_Fuel_Off()", "", "")
