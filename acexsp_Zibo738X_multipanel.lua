@@ -6,7 +6,7 @@
 if PLANE_ICAO == "B738" then
 	-- ************************************************************************************************************************************************************************************************
 	-- GLOBAL VARIABLES
-	AceXSP_Version = "1.11"
+	AceXSP_Version = "1.13"
 	
 	-- Global datarefs
 	dataref("XSP_FNBUTTON", "bgood/xsaitekpanels/fnbutton/status", "readonly")

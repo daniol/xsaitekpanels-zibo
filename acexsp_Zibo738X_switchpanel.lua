@@ -12,7 +12,7 @@ if PLANE_ICAO == "B738" then
     
 	-- ************************************************************************************************************************************************************************************************
 	-- GLOBAL VARIABLES
-	AceXSP_Version = "1.11"
+	AceXSP_Version = "1.13"
 	-- [Ticket 1] Minimum fuel: 453 kg + 90 kg zibo internal tolerance
 	AceXSP_Zibo_FuelCenterMin = 543.0
 	
