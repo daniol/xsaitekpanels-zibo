@@ -29,6 +29,7 @@ if PLANE_ICAO == "B738" then
 	dataref("ZIBO_FUEL_RIGHT2", "laminar/B738/fuel/fuel_tank_pos_rgt2", "readonly")
 	dataref("ZIBO_FUEL_CENTER1", "laminar/B738/fuel/fuel_tank_pos_ctr1", "readonly")
 	dataref("ZIBO_FUEL_CENTER2", "laminar/B738/fuel/fuel_tank_pos_ctr2", "readonly")
+	dataref("ZIBO_BAT_COVER_POSITION", "laminar/B738/button_switch/cover_position", "readonly", 2)
 	dataref("ZIBO_FUEL_CENTER_QTY", "sim/flightmodel/weight/m_fuel2", "readonly")
 		
 	-- ************************************************************************************************************************************************************************************************
@@ -109,7 +110,10 @@ if PLANE_ICAO == "B738" then
 	function AceXSP_Switch_Bat_On()
 		if XSP_FNBUTTON == 0 then
 			command_once("laminar/B738/switch/battery_dn")
-                        command_once("laminar/B738/button_switch_cover02")
+                        
+                        if ZIBO_BAT_COVER_POSITION == 1 then
+                            command_once("laminar/B738/button_switch_cover02")
+                        end
 		else
 			command_once("laminar/B738/toggle_switch/gpu_dn")
 		end
@@ -119,8 +123,10 @@ if PLANE_ICAO == "B738" then
 
 	function AceXSP_Switch_Bat_Off()
 		if XSP_FNBUTTON == 0 then
-                        command_once("laminar/B738/button_switch_cover02")
-                        sleep(0.1)
+                        if ZIBO_BAT_COVER_POSITION == 0 then
+                            command_once("laminar/B738/button_switch_cover02")
+                            sleep(0.1)
+                        end
 			command_once("laminar/B738/switch/battery_up")
 		else
 			command_once("laminar/B738/toggle_switch/gpu_up")
