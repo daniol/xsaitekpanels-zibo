@@ -41,7 +41,6 @@ if PLANE_ICAO == "B738" then
 	dataref("ZIBO_ON_GROUND", "sim/flightmodel2/gear/on_ground", "readonly", 0)
 	dataref("ZIBO_PACK_LEFT", "laminar/B738/air/l_pack_pos", "readonly")
 	dataref("ZIBO_PACK_RIGHT", "laminar/B738/air/r_pack_pos", "readonly")
-	dataref("ZIBO_ISOLATION_VALVE", "laminar/B738/air/isolation_valve_pos", "readonly")
 		
 	-- ************************************************************************************************************************************************************************************************
 	-- PROGRAM START
@@ -332,7 +331,7 @@ if PLANE_ICAO == "B738" then
 	end
 	create_command("FlyWithLua/AceXSP/Switch_Taxi_On", "Switch_Taxi_On", "AceXSP_Switch_Taxi_On()", "", "")
 	
-	function AceXSP_Switch_PackIsolation_Open()
+	function AceXSP_Switch_Packs_Open()
 	
 		-- Pack left must be off (0) - move up
 		if ZIBO_PACK_LEFT > 0 then
@@ -350,19 +349,11 @@ if PLANE_ICAO == "B738" then
 			command_once("laminar/B738/toggle_switch/r_pack_up")
 		end
 		
-		-- Isolation valve must be open (2) - move down
-		if ZIBO_ISOLATION_VALVE ~= 2 then
-			command_once("laminar/B738/toggle_switch/iso_valve_dn")
-		end
-		if ZIBO_ISOLATION_VALVE ~= 2 then
-			command_once("laminar/B738/toggle_switch/iso_valve_dn")
-		end
-		
 		return
 	end
-	create_command("FlyWithLua/AceXSP/Switch_PackIsolation_Open", "Switch_PackIsolation_Open", "AceXSP_Switch_PackIsolation_Open()", "", "")
+	create_command("FlyWithLua/AceXSP/Switch_Packs_Open", "Switch_Packs_Open", "AceXSP_Switch_Packs_Open()", "", "")
 	
-	function AceXSP_Switch_PackIsolation_Close()
+	function AceXSP_Switch_Packs_Close()
 	
 		
 		-- Pack left must be auto (1) - move in the middle
@@ -379,16 +370,9 @@ if PLANE_ICAO == "B738" then
 			command_once("laminar/B738/toggle_switch/r_pack_up")
 		end
 		
-		-- Isolation valve must be auto (1) - move in the middle
-		if ZIBO_ISOLATION_VALVE == 0 then
-			command_once("laminar/B738/toggle_switch/iso_valve_dn")
-		elseif ZIBO_ISOLATION_VALVE == 2 then
-			command_once("laminar/B738/toggle_switch/iso_valve_up")
-		end
-		
 		
 		return
 	end
-	create_command("FlyWithLua/AceXSP/Switch_PackIsolation_Close", "Switch_PackIsolation_Close", "AceXSP_Switch_PackIsolation_Close()", "", "")
+	create_command("FlyWithLua/AceXSP/Switch_Packs_Close", "Switch_Packs_Close", "AceXSP_Switch_Packs_Close()", "", "")
 		
 end
