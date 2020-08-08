@@ -13,11 +13,18 @@ if PLANE_ICAO == "B738" then
 	-- ************************************************************************************************************************************************************************************************
 	-- GLOBAL VARIABLES
 	AceXSP_Version = "1.13"
+	
 	-- [Ticket 1] Minimum fuel: 453 kg + 90 kg zibo internal tolerance
 	AceXSP_Zibo_FuelCenterMin = 543.0
 	
 	-- Global datarefs
 	dataref("XSP_FNBUTTON", "bgood/xsaitekpanels/fnbutton/status", "readonly")
+	
+	-- Environmental datarefs
+	dataref("WEATHER_VISIBILITY", "sim/weather/visibility_reported_m", "readonly")
+	dataref("WEATHER_CLOUD_TYPE", "sim/weather/cloud_type[0]", "readonly")
+	dataref("WEATHER_CLOUD_ALT", "sim/weather/cloud_base_msl_m[0]", "readonly")
+	dataref("WEATHER_LIGHT", "sim/graphics/misc/light_attenuation", "readonly")
 	
 	-- Switch datarefs
 	dataref("ZIBO_AUTOBRAKE_POS", "laminar/B738/autobrake/autobrake_pos", "readonly")
@@ -31,11 +38,33 @@ if PLANE_ICAO == "B738" then
 	dataref("ZIBO_FUEL_CENTER2", "laminar/B738/fuel/fuel_tank_pos_ctr2", "readonly")
 	dataref("ZIBO_BAT_COVER_POSITION", "laminar/B738/button_switch/cover_position", "readonly", 2)
 	dataref("ZIBO_FUEL_CENTER_QTY", "sim/flightmodel/weight/m_fuel2", "readonly")
+	dataref("ZIBO_ON_GROUND", "sim/flightmodel2/gear/on_ground", "readonly", 0)
+	dataref("ZIBO_PACK_LEFT", "laminar/B738/air/l_pack_pos", "readonly")
+	dataref("ZIBO_PACK_RIGHT", "laminar/B738/air/r_pack_pos", "readonly")
+	dataref("ZIBO_ISOLATION_VALVE", "laminar/B738/air/isolation_valve_pos", "readonly")
 		
 	-- ************************************************************************************************************************************************************************************************
 	-- PROGRAM START
 
 	logMsg ( "AceXSP: ** Starting AceXSP_Zibo738X SWITCHPANEL version "..AceXSP_Version.." **" )
+	
+	-- ************************************************************************************************************************************************************************************************
+	-- HELPER FUNCTIONS
+	
+	local function AceXSP_Visib_Good()
+		-- Typically an RVR (runway visual range) below 550 meters or a cloud base below 200 ft aal will trigger LVPs (low visibility procedures)
+		-- Source: https://www.skybrary.aero/index.php/Low_Visibility_Procedures_(LVP)#Aerodromes
+		-- Darkness: > 0.5 means low (afternoon/night/dawn)
+		
+		if ( WEATHER_VISIBILITY > 0 and WEATHER_VISIBILITY < 550 ) or
+		   ( WEATHER_CLOUD_TYPE ~= 0 and (WEATHER_CLOUD_ALT - ELEVATION) < 200 ) or
+		   ( WEATHER_LIGHT > 0.5 ) then
+			return false
+		end
+	
+		-- Otherwhise visib. OK
+		return true
+	end
 		
 	-- ************************************************************************************************************************************************************************************************
 	-- SWITCHPANEL COMMANDS
@@ -111,9 +140,9 @@ if PLANE_ICAO == "B738" then
 		if XSP_FNBUTTON == 0 then
 			command_once("laminar/B738/switch/battery_dn")
                         
-                        if ZIBO_BAT_COVER_POSITION == 1 then
-                            command_once("laminar/B738/button_switch_cover02")
-                        end
+			if ZIBO_BAT_COVER_POSITION == 1 then
+				command_once("laminar/B738/button_switch_cover02")
+			end
 		else
 			command_once("laminar/B738/toggle_switch/gpu_dn")
 		end
@@ -123,10 +152,10 @@ if PLANE_ICAO == "B738" then
 
 	function AceXSP_Switch_Bat_Off()
 		if XSP_FNBUTTON == 0 then
-                        if ZIBO_BAT_COVER_POSITION == 0 then
-                            command_once("laminar/B738/button_switch_cover02")
-                            sleep(0.1)
-                        end
+			if ZIBO_BAT_COVER_POSITION == 0 then
+				command_once("laminar/B738/button_switch_cover02")
+				sleep(0.1)
+			end
 			command_once("laminar/B738/switch/battery_up")
 		else
 			command_once("laminar/B738/toggle_switch/gpu_up")
@@ -252,8 +281,13 @@ if PLANE_ICAO == "B738" then
 		command_once("laminar/B738/switch/land_lights_ret_left_dn")
 		command_once("laminar/B738/switch/land_lights_ret_right_dn")
 		command_once("laminar/B738/switch/land_lights_ret_right_dn")
-		command_once("laminar/B738/switch/rwy_light_left_on")
-		command_once("laminar/B738/switch/rwy_light_right_on")
+		
+		-- Runway turnoff light ON only if aircraft is on the air (for descent), to exclude before takeoff
+		if ZIBO_ON_GROUND == 0 then
+			command_once("laminar/B738/switch/rwy_light_left_on")
+			command_once("laminar/B738/switch/rwy_light_right_on")
+		end
+		
 		set("laminar/B738/switch/land_lights_left_pos", 1)
 		set("laminar/B738/switch/land_lights_right_pos", 1)
 		set("laminar/B738/switch/land_lights_ret_left_pos", 2)
@@ -269,8 +303,13 @@ if PLANE_ICAO == "B738" then
 		command_once("laminar/B738/switch/land_lights_ret_left_up")
 		command_once("laminar/B738/switch/land_lights_ret_right_up")
 		command_once("laminar/B738/switch/land_lights_ret_right_up")	
-		command_once("laminar/B738/switch/rwy_light_left_off")
-		command_once("laminar/B738/switch/rwy_light_right_off")
+		
+		-- Runway turnoff light OFF: only if aircraft is on the ground and visibility and daylight are good, or if aircraft is on the air
+		if (ZIBO_ON_GROUND == 1 and AceXSP_Visib_Good() == true) or (ZIBO_ON_GROUND == 0) then
+			command_once("laminar/B738/switch/rwy_light_left_off")
+			command_once("laminar/B738/switch/rwy_light_right_off")
+		end
+		
 		set("laminar/B738/switch/land_lights_left_pos", 0) 
 		set("laminar/B738/switch/land_lights_right_pos", 0)
 		set("laminar/B738/switch/land_lights_ret_left_pos", 0)
@@ -280,5 +319,76 @@ if PLANE_ICAO == "B738" then
 		return
 	end
 	create_command("FlyWithLua/AceXSP/Switch_Land_Off", "Switch_Land_Off", "AceXSP_Switch_Land_Off()", "", "")
+	
+	function AceXSP_Switch_Taxi_On()
+	
+		-- Runway turnoff light ON (only if ground visibility is low or hours of darkness)
+		if (ZIBO_ON_GROUND == 1 and AceXSP_Visib_Good() == false) then
+			command_once("laminar/B738/switch/rwy_light_left_on")
+			command_once("laminar/B738/switch/rwy_light_right_on")
+		end
+		
+		return
+	end
+	create_command("FlyWithLua/AceXSP/Switch_Taxi_On", "Switch_Taxi_On", "AceXSP_Switch_Taxi_On()", "", "")
+	
+	function AceXSP_Switch_PackIsolation_Open()
+	
+		-- Pack left must be off (0) - move up
+		if ZIBO_PACK_LEFT > 0 then
+			command_once("laminar/B738/toggle_switch/l_pack_up")
+		end
+		if ZIBO_PACK_LEFT > 0 then
+			command_once("laminar/B738/toggle_switch/l_pack_up")
+		end
+		
+		-- Pack right must be off (0) - move up
+		if ZIBO_PACK_RIGHT > 0 then
+			command_once("laminar/B738/toggle_switch/r_pack_up")
+		end
+		if ZIBO_PACK_RIGHT > 0 then
+			command_once("laminar/B738/toggle_switch/r_pack_up")
+		end
+		
+		-- Isolation valve must be open (2) - move down
+		if ZIBO_ISOLATION_VALVE ~= 2 then
+			command_once("laminar/B738/toggle_switch/iso_valve_dn")
+		end
+		if ZIBO_ISOLATION_VALVE ~= 2 then
+			command_once("laminar/B738/toggle_switch/iso_valve_dn")
+		end
+		
+		return
+	end
+	create_command("FlyWithLua/AceXSP/Switch_PackIsolation_Open", "Switch_PackIsolation_Open", "AceXSP_Switch_PackIsolation_Open()", "", "")
+	
+	function AceXSP_Switch_PackIsolation_Close()
+	
+		
+		-- Pack left must be auto (1) - move in the middle
+		if ZIBO_PACK_LEFT == 0 then
+			command_once("laminar/B738/toggle_switch/l_pack_dn")
+		elseif ZIBO_PACK_LEFT == 2 then
+			command_once("laminar/B738/toggle_switch/l_pack_up")
+		end
+		
+		-- Pack right must be auto (1) - move in the middle
+		if ZIBO_PACK_RIGHT == 0 then
+			command_once("laminar/B738/toggle_switch/r_pack_dn")
+		elseif ZIBO_PACK_RIGHT == 2 then
+			command_once("laminar/B738/toggle_switch/r_pack_up")
+		end
+		
+		-- Isolation valve must be auto (1) - move in the middle
+		if ZIBO_ISOLATION_VALVE == 0 then
+			command_once("laminar/B738/toggle_switch/iso_valve_dn")
+		elseif ZIBO_ISOLATION_VALVE == 2 then
+			command_once("laminar/B738/toggle_switch/iso_valve_up")
+		end
+		
+		
+		return
+	end
+	create_command("FlyWithLua/AceXSP/Switch_PackIsolation_Close", "Switch_PackIsolation_Close", "AceXSP_Switch_PackIsolation_Close()", "", "")
 		
 end
