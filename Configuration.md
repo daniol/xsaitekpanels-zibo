@@ -57,4 +57,4 @@ Below the table of binded functions for Autopilot:
 
 
 ## Radio Panels
-Configuration are defaults of XSaitekPanels.
+Configurations are defaults of XSaitekPanels.
