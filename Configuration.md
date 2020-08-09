@@ -1,5 +1,5 @@
 # Configurations
-This document describe which customisations of default configuration had made.
+This document describes which customisations of default configuration has made.
 
 ## Switch Panel
 Below the table of binded functions:
