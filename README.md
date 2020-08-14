@@ -21,9 +21,10 @@ XSaitekPanels map for Zibo 737-800 aicraft, including:
 - If you have MULTIPANEL, copy "acexsp_Zibo738X_multipanel.lua" into FlyWithLUA Scripts folder. (ex. "[X-Plane]\Resources\plugins\FlyWithLua\Scripts\")
 - If you have SWITCHPANEL, copy "acexsp_Zibo738X_switchpanel.lua" into FlyWithLUA Scripts folder. (ex. "[X-Plane]\Resources\plugins\FlyWithLua\Scripts\")
 
-## Configuration
-Click **[here](https://github.com/daniol/xsaitekpanels-zibo/blob/master/Configuration.md)** for configuration doc.
+## Functions and switch assignments
+Check the **[Configuration document](Configuration.md)** to learn about the functions assigned to the switches.
 
 ## Credits
 - Initial work from [lanmancz](https://forums.x-plane.org/index.php?/profile/372101-lanmancz/)
 - [CyberGuerro](https://forums.x-plane.org/index.php?/profile/580204-cyberguerro/)
+- [Daniol](https://github.com/daniol)
