@@ -15,7 +15,7 @@ XSaitekPanels map for Zibo 737-800 aicraft, including:
 - Click on **[Releases](https://github.com/daniol/xsaitekpanels-zibo/releases)**
 - Download the latest release, clicking on "Source code (zip)"
 
-## Installation:
+## Installation and update:
 - Remove any existing Zibo XSaitekPanels mappings
 - Copy "xsaitekpanels.ini" into Zibo738 root folder. (ex. "[X-Plane]\Aircraft\B737-800X\")
 - If you have MULTIPANEL, copy "acexsp_Zibo738X_multipanel.lua" into FlyWithLUA Scripts folder. (ex. "[X-Plane]\Resources\plugins\FlyWithLua\Scripts\")
